@@ -1,0 +1,28 @@
+#include <windows.h>
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+ZL ICON "Shootzilla.ico"
+1 VERSIONINFO
+	FILEVERSION     1,0,0,0
+	PRODUCTVERSION  1,0,0,0
+	FILEOS          VOS_NT_WINDOWS32
+	FILETYPE        VFT_APP
+{
+	BLOCK "StringFileInfo"
+	{
+		BLOCK "040904b0"
+		{
+			VALUE "FileDescription", "Shootzilla"
+			VALUE "FileVersion", "1.0"
+			VALUE "ProductName", "Shootzilla"
+			VALUE "ProductVersion", "1.0"
+			VALUE "InternalName", "Shootzilla"
+			VALUE "OriginalFilename", "Shootzilla.exe"
+			//VALUE "CompanyName", ""
+			//VALUE "LegalCopyright", "(C) 2022"
+		}
+	}
+	BLOCK "VarFileInfo"
+	{
+		VALUE "Translation", 0x409, 1252
+	}
+}
