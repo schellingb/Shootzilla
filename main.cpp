@@ -133,7 +133,7 @@ static void FadeWalls(float h)
 
 static void SpawnEnemy()
 {
-	float enemytype = RAND_FACTOR * (wave <= 2 ? .6f : (wave <= 4 ? .9f : 1.f)) + (wave/15.0f);
+	float enemytype = (RAND_FACTOR * (wave <= 2 ? .6f : (wave <= 4 ? .9f : 1.f))) + (wave <= 4 ? 0 : wave/15.0f);
 	Thing::Type etype = (enemytype < .6f ? Thing::ENEMY_SPIDER : (enemytype < .9f ? Thing::ENEMY_BAT : Thing::ENEMY_GHOST));
 	ZL_Vector3 epos;
 	for (;;)
@@ -468,13 +468,10 @@ static void Load()
 	fntTitle = ZL_Font("Data/typomoderno.ttf.zip", 100.f);
 	srfCrosshair = ZL_Surface("Data/crosshair.png").SetOrigin(ZL_Origin::Center);
 
-	LightSun.SetColor(ZLRGB(.4,.4,.4));
 	LightSun.SetSpotLight(50, 1.0f);
 
-	LightPlayer.SetColor(ZLRGB(.4,.4,.4));
+	LightPlayer.SetColor(ZLRGB(.7,.7,.7));
 	LightPlayer.SetFalloff(5);
-
-	Camera.SetAmbientLightColor(ZLRGB(.4*.5f,.2,.2));
 
 	using namespace ZL_MaterialModes;
 
@@ -742,7 +739,6 @@ static void Draw()
 	if (ZL_Input::Down(ZLK_F5)) waveticks = ZLTICKS;
 	#endif
 
-
 	ParticleDamage.Update(Camera);
 	ParticleDestroy.Update(Camera);
 
@@ -754,14 +750,18 @@ static void Draw()
 		campos.z = ZL_Math::Lerp(campos.z, .1f, got);
 		camdir = ZL_Vector3::Lerp(camdir, ZL_Vector3::Up, got).Norm();
 	}
-	Camera.SetLookAt(campos, campos + camdir);
+
 	ZL_Vector lightang = ZL_Vector::FromAngle(ZLTICKS*.0001f);
 	if (lightang.y < 0) { lightang = -lightang; }
 	ZL_Vector lightctr = ZLV(MAPW*.5f,MAPH*.5f);
 	LightSun.SetLookAt(ZLV3(lightctr.x - MAPW*1.3f * lightang.x, lightctr.y - MAPH*1.3f * lightang.x , 2 + 22 * lightang.y), ZLV3(MAPW*.45f,MAPH*.45f,.1));
+	LightSun.SetColor(ZLRGB(.4,.4,.4));
 	LightPlayer.SetPosition(Camera.GetPosition());
+	Camera.SetAmbientLightColor(ZL_Color::Lerp(ZLRGB(.2f,.1f,.0), ZLRGB(.2,.2,.2), lightang.y));
+	Camera.SetLookAt(campos, campos + camdir);
 
-	ZL_Display::FillGradient(0, 0, ZLWIDTH, ZLHEIGHT, ZLRGB(0,0,.3), ZLRGB(0,0,.3), ZLRGB(.4,.4,.4), ZLRGB(.4,.4,.4));
+	ZL_Color sky = ZL_Color::Lerp(ZLRGB(.2f,.1f,.0), ZLRGB(0,0,.4), lightang.y);
+	ZL_Display::FillGradient(0, 0, ZLWIDTH, ZLHEIGHT, sky, sky, ZLRGB(.4,.4,.4), ZLRGB(.4,.4,.4));
 	RenderList.Reset();
 	for (Bullet& b : bullets)
 	{
@@ -811,6 +811,7 @@ static void Draw()
 	if (!gameover)
 		srfCrosshair.Draw(ZLHALFW, ZLHALFH-5);
 
+#if 1
 	ZL_Rectf minimap(ZLFROMW(200), ZLFROMH(200), ZLFROMW(20), ZLFROMH(20));
 	if (ZL_Input::Held(ZLK_LCTRL)) minimap = ZL_Rectf(ZLFROMW(600), ZLFROMH(600), ZLFROMW(20), ZLFROMH(20));
 
@@ -848,6 +849,7 @@ static void Draw()
 	{
 		ZL_Display::FillRect(0, 0, ZLWIDTH, ZLHEIGHT, ZL_Color(1,0,0,.3f-(.3f*lasthit)));
 	}
+#endif
 
 	if (gameover)
 	{

@@ -10,6 +10,7 @@ Can you delay the inevitable?
 | WASD                       | Move                   |
 | LEFT CLICK                 | Attack                 |
 | SPACE or RIGHT CLICK       | (Double)Jump           |
+| LEFT CTRL                  | Minimap Zoom           |
 
 ## Dependencies
 Shootzilla runs on Windows, Linux, Mac OS X, Android, iOS and HTML5 (WebAssembly).  
